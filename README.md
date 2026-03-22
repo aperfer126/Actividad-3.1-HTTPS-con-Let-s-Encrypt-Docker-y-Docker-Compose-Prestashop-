@@ -49,6 +49,35 @@ Una vez estén todos los contenedores `healthy`:
 - Accede a PrestaShop en `http://localhost` (o `https://<DOMAIN>` si el proxy está activo).
 - phpMyAdmin queda disponible en `http://localhost:8080`.
 
+Primero, creamos una IP mediante algun tipo de servicio, en este caso será No-IP
+![imagen1](img/image1.png)
+
+La IP será la IP publica de nuestra instancia en WSL. Creamos entonces un compose.yaml con los datos proporcionados, asi como un .env en el cual pondremos en domain el nombre de nuestro host creado en No-IP
+![imagen2](img/image2.png)
+
+Y lo lanzamos con un docker compose up -d
+![imagen3](img/image3.png)
+
+Hemos tenido que hacer un docker compose down porque faltan los certificados asi que añadimos las siguientes lineas en https-portal:
+volumes:
+- ssl_certs_data:/var/lib/https-portal
+
+y en volumes añadimos la siguiente linea:
+ss_certs_data:
+
+Para añadir de esta forma los certificados y volvemos a hacer un docker compose up
+![imagen4](img/image4.png)
+![imagen5](img/image5.png)
+
+Y ahora si accedemos al dominio en un navegador
+![imagen6](img/image6.png)
+
+Vamos rellenando los campos y aceptando, pero en la siguiente ventana, cambiamos los datos por los que tenemos en el usuario y password del .env
+![imagen7](img/image7.png)
+
+Y finalmente si al terminar nos volvemos a dirigir a la pagina, tendremos nuestra PrestaShop levantada
+![imagen8](img/image8.png)
+
 ## 🗂 Datos persistentes
 Los volúmenes definidos en el `compose.yaml` mantienen:
 - `mysql_data`: ficheros de la base de datos.
@@ -68,5 +97,3 @@ docker compose down --volumes --remove-orphans
 ```
 
 ---
-
-¡Listo! Con estos ficheros cualquier persona puede clonar el repositorio, revisar el `.env` y ejecutar `docker compose up` para recrear el entorno de la práctica desde cero.
